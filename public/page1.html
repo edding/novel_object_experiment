@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Novel Object Experiment</title>
+    <link rel="stylesheet" href="stylesheets/style.css" />
+</head>
+
+<body onLoad="start()">
+    <img id="book" src="images/book.png" hidden>
+    <img id="cube" src="images/cube.png" hidden>
+    <img id="computer" src="images/computer.png" hidden>
+    <img id="pyramid" src="images/pyramid.png" hidden>
+    <img id="sphere" src="images/sphere.png" hidden>
+
+    <canvas id="canvas" width=700 height=600></canvas>
+
+    <div class='btn' id='reset' onclick='reset()'>Clear</div>
+    <div class='btn' id='submit' onclick='submit()'hidden>Submit</div>
+    <div class='btn hide' id='drawLine' onclick='set_mode("drag")'>Drag Text</div>
+    <div class='btn hide' id='dragText' onclick='set_mode("draw")'>Draw Line</div>
+    <div class='btn hide' id='redo' onclickxx='redo()' hidden>Redo</div>
+    
+    <script src="javascripts/index.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</body>
+</html>
