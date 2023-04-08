@@ -17,7 +17,7 @@ const SCALE = 2;
 
 // Experimetn settings
 const N_IMAGES_PER_TRAIL = 16;
-const N_IMAGES = 30;
+const N_TOTAL_IMAGES = 30;
 const N_TRAILS = 5;
 
 // Webpage onload entry point
@@ -35,11 +35,34 @@ function start() {
   add_listener();
 }
 
+function getInitialImagePosition(index, totalRows, totalCols) {
+  row = Math.floor(index / totalCols);
+  col = index % totalCols;
+
+  // Get the total width and height of required
+  // for placing totalRows * totalCols images with a padding of 10px
+  const padding = 50;
+  const totalWidth =
+    totalCols * (SCALE * IMAGE_SIZE + 2 * PADDING) + (totalCols - 1) * padding;
+  const totalHeight =
+    totalRows * (SCALE * IMAGE_SIZE + 2 * PADDING) + (totalRows - 1) * padding;
+
+  // Center the whole image grid
+  const originX = (WIDTH - totalWidth) / 2;
+  const originY = (HEIGHT - totalHeight) / 2;
+
+  // Calculate the position of the image
+  const x = originX + col * (SCALE * IMAGE_SIZE + 2 * PADDING) + col * padding;
+  const y = originY + row * (SCALE * IMAGE_SIZE + 2 * PADDING) + row * padding;
+
+  return [x, y];
+}
+
 function init_images() {
   // Load images and setup imageInfos for tracking the position of images
   imageInfos = [];
   let current_y = 100;
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= N_IMAGES_PER_TRAIL; i++) {
     // Load image
     const img = new Image();
     img.src = "images/objects/" + i + ".PNG";
@@ -48,12 +71,13 @@ function init_images() {
 
     // Stores the infomration of the bounding box
     // and position of the image
+    [initialX, initialY] = getInitialImagePosition(i - 1, 4, 4);
     imageInfos.push({
       text: "obj" + i,
 
       // Bounding box
-      x: WIDTH / 2 - IMAGE_SIZE - PADDING,
-      y: current_y,
+      x: initialX,
+      y: initialY,
       width: SCALE * IMAGE_SIZE + 2 * PADDING,
       height: SCALE * IMAGE_SIZE + 2 * PADDING,
 
