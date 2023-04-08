@@ -21,22 +21,26 @@ body {
     display: block;
     width: 1000px;
     height: 600px;
-    display: inline-block;
+    display: block;
+}
+
+#buttons {
+    float: right;
 }
 
 .btn {
     border: none;
-    background-color: inherit;
     padding: 14px 28px;
-    margin: 0px;
+    margin: 5px;
     font-size: 16px;
     cursor: pointer;
     display: inline-block;
-    color: dodgerblue;
+    background-color: #2196F3;
+    color: white;
 }
 
 .btn:hover {
-    background: #2196F3;
+    background: #0b4d83;
     color: white;
 }
 

@@ -1,22 +1,39 @@
-var ctx, isDown, offsetX, offsetY, startX, startY;
-var storedLines = [];
-var mode = "drag";
+// Global variables for storing the images and their infos
 var imageInfos = [];
 var images = [];
 
-var drawFromText = -1;
-var selectedText = -1;
+// Global variables for tracking the mouse position and selected image
+var startX, startY;
+var selectedImgIndex = -1;
 
 // Image settings
 const IMAGE_SIZE = 30;
 const PADDING = 5;
 
-// Canvas setting
+// Canvas settings
 const WIDTH = 1000;
 const HEIGHT = 600;
 const SCALE = 2;
 
+// Experimetn settings
+const N_IMAGES_PER_TRAIL = 16;
 const N_IMAGES = 30;
+const N_TRAILS = 5;
+
+// Webpage onload entry point
+function start() {
+  const canvas = document.getElementById("canvas");
+  canvas.width = WIDTH * SCALE;
+  canvas.height = HEIGHT * SCALE;
+
+  // Set the scale so that images on canvas
+  // can be drawn in higher resolution
+  const ctx = canvas.getContext("2d");
+  ctx.scale(SCALE, SCALE);
+
+  reset();
+  add_listener();
+}
 
 function init_images() {
   // Load images and setup imageInfos for tracking the position of images
@@ -41,32 +58,13 @@ function init_images() {
       height: SCALE * IMAGE_SIZE + 2 * PADDING,
 
       // Image
+      // TODO(edwardd): Keep the original image ratio
       image_width: SCALE * IMAGE_SIZE,
       image_height: SCALE * IMAGE_SIZE,
     });
 
     current_y += SCALE * IMAGE_SIZE + 2 * PADDING + 10;
   }
-}
-
-function start() {
-  const canvas = document.getElementById("canvas");
-  canvas.width = WIDTH * SCALE;
-  canvas.height = HEIGHT * SCALE;
-
-  ctx = canvas.getContext("2d");
-  ctx.scale(SCALE, SCALE);
-
-  // variables used to get mouse position on the canvas
-  reset_offset();
-
-  // START: draw all texts to the canvas
-  reset();
-  add_listener();
-}
-
-function set_mode(m) {
-  mode = m;
 }
 
 function add_listener() {
@@ -76,47 +74,17 @@ function add_listener() {
   canvas.addEventListener("mousemove", handleMouseMove, false);
   canvas.addEventListener("mouseup", handleMouseUp, false);
   canvas.addEventListener("mouseout", handleMouseOut, false);
-
-  // Add active class to the current button (highlight it)
-  var btns = document.getElementsByClassName("btn");
-  for (var i = 0; i < btns.length - 2; i++) {
-    btns[i].addEventListener("click", function () {
-      var current = document.getElementsByClassName("active");
-      if (current.length > 0) {
-        current[0].className = current[0].className.replace(" active", "");
-      }
-      this.className += " active";
-    });
-  }
-}
-
-function reset_offset() {
-  const canvas = document.getElementById("canvas");
-  let rect = canvas.getBoundingClientRect();
-  offsetX = rect.left;
-  offsetY = rect.top;
 }
 
 function reset() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  storedLines = [];
   init_images();
   draw();
-  set_mode("drag");
-
-  // change active button
-  var current = document.getElementsByClassName("active");
-  if (current.length > 0) {
-    current[0].className = current[0].className.replace(" active", "");
-  }
-  var dragBtn = document.getElementById("dragText");
-  dragBtn.className += " active";
 }
 
 function draw() {
-  const canvas = document.getElementById("canvas");
-
   // Clear canvas
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Draw all images
@@ -127,8 +95,6 @@ function draw() {
     ctx.strokeStyle = "grey";
     ctx.lineWidth = 1;
     ctx.strokeRect(imageInfo.x, imageInfo.y, imageInfo.width, imageInfo.height);
-    // ctx.fillStyle = "white";
-    // ctx.fillRect(...rect_bound);
 
     const img = images[i];
     ctx.drawImage(
@@ -142,201 +108,78 @@ function draw() {
   }
 }
 
-// test if x,y is inside the bounding box of texts[textIndex]
-function textHittest(x, y, textIndex) {
-  var text = imageInfos[textIndex];
+function getMousePosWithinCanvas(e) {
+  const canvas = document.getElementById("canvas");
+  let rect = canvas.getBoundingClientRect();
+  offsetX = rect.left;
+  offsetY = rect.top;
+
+  const mouseX = parseInt(e.clientX - offsetX);
+  const mouseY = parseInt(e.clientY - offsetY);
+  return [mouseX, mouseY];
+}
+
+// Test if the (x, y) is within the bounding of the image at index
+function hitTest(x, y, index) {
+  const imageInfo = imageInfos[index];
   return (
-    x >= text.x - PADDING &&
-    x <= text.x + IMAGE_SIZE * 2 + PADDING &&
-    y >= text.y - PADDING &&
-    y <= text.y + IMAGE_SIZE * 2 + PADDING
+    x >= imageInfo.x &&
+    x <= imageInfo.x + imageInfo.width &&
+    y >= imageInfo.y &&
+    y <= imageInfo.y + imageInfo.height
   );
 }
 
-function redo() {
-  switch (mode) {
-    case "drag":
-      break;
-    case "draw":
-      storedLines.pop();
-      draw();
-      break;
-    default:
-    // code block
-  }
-}
-
-// handle mousedown events
-// iterate through texts[] and see if the user
-// mousedown'ed on one of them
-// If yes, set the selectedText to the index of that text
+// Check if the mouse down event lands within the bounding box of a image
+// If so, set the selectedImgIndex to the index of the image
 function handleMouseDown(e) {
-  reset_offset();
   e.preventDefault();
-  switch (mode) {
-    case "drag":
-      startX = parseInt(e.clientX - offsetX);
-      startY = parseInt(e.clientY - offsetY);
 
-      for (var i = 0; i < imageInfos.length; i++) {
-        if (textHittest(startX, startY, i)) {
-          selectedText = i;
-        }
-      }
-
-      break;
-    case "draw":
-      var mouseX = parseInt(e.clientX - offsetX);
-      var mouseY = parseInt(e.clientY - offsetY);
-      drawFromText = -1;
-      for (var i = 0; i < imageInfos.length; i++) {
-        if (textHittest(mouseX, mouseY, i)) {
-          drawFromText = i;
-        }
-      }
-
-      if (drawFromText < 0) {
-        break;
-      }
-
-      e.stopPropagation();
-
-      isDown = true;
-      startX = mouseX;
-      startY = mouseY;
-      break;
-    default:
-    // code block
+  [startX, startY] = getMousePosWithinCanvas(e);
+  for (var i = 0; i < imageInfos.length; i++) {
+    if (hitTest(startX, startY, i)) {
+      selectedImgIndex = i;
+    }
   }
 }
 
 // done dragging
 function handleMouseUp(e) {
   e.preventDefault();
-  switch (mode) {
-    case "drag":
-      selectedText = -1;
-      break;
-    case "draw":
-      var mouseX = parseInt(e.clientX - offsetX);
-      var mouseY = parseInt(e.clientY - offsetY);
-      var drawToText = -1;
-      for (var i = 0; i < imageInfos.length; i++) {
-        if (textHittest(mouseX, mouseY, i)) {
-          drawToText = i;
-        }
-      }
-
-      e.stopPropagation();
-
-      isDown = false;
-
-      if (drawToText >= 0 && drawFromText >= 0 && drawToText !== drawFromText) {
-        storedLines.push({
-          x1: startX,
-          y1: startY,
-          x2: mouseX,
-          y2: mouseY,
-        });
-      }
-
-      draw();
-      break;
-    default:
-    // code block
-  }
+  selectedImgIndex = -1;
 }
 
 // also done dragging
 function handleMouseOut(e) {
   e.preventDefault();
-  switch (mode) {
-    case "drag":
-      selectedText = -1;
-      break;
-    case "draw":
-      e.stopPropagation();
-
-      if (!isDown) {
-        return;
-      }
-
-      isDown = false;
-
-      draw();
-      break;
-    default:
-    // code block
-  }
+  selectedImgIndex = -1;
 }
 
-// handle mousemove events
-// calc how far the mouse has been dragged since
-// the last mousemove event and move the selected text
-// by that distance
+// As we move the mouse, this function will be called multiple times.
+// The actual call frequency is determined by the browser and the users hardware.
 function handleMouseMove(e) {
   e.preventDefault();
-  switch (mode) {
-    case "drag":
-      if (selectedText < 0) {
-        return;
-      }
-      mouseX = parseInt(e.clientX - offsetX);
-      mouseY = parseInt(e.clientY - offsetY);
 
-      // Put your mousemove stuff here
-      var dx = mouseX - startX;
-      var dy = mouseY - startY;
-      startX = mouseX;
-      startY = mouseY;
-
-      var text = imageInfos[selectedText];
-      text.x += dx;
-      text.y += dy;
-      draw();
-      break;
-    case "draw":
-      e.stopPropagation();
-
-      if (!isDown) {
-        return;
-      }
-
-      draw();
-
-      var mouseX = parseInt(e.clientX - offsetX);
-      var mouseY = parseInt(e.clientY - offsetY);
-
-      // draw the current line
-      ctx.beginPath();
-      // ctx.moveTo(startX, startY);
-      // ctx.lineTo(mouseX, mouseY);
-      canvas_arrow(ctx, startX, startY, mouseX, mouseY);
-      ctx.stroke();
-      break;
-    default:
-    // code block
+  // If no image is being selected, do nothing
+  if (selectedImgIndex < 0) {
+    return;
   }
-}
 
-function canvas_arrow(context, fromx, fromy, tox, toy) {
-  ctx.strokeStyle = "orange";
-  ctx.lineWidth = 3;
-  var headlen = 10; // length of head in pixels
-  var dx = tox - fromx;
-  var dy = toy - fromy;
-  var angle = Math.atan2(dy, dx);
-  context.moveTo(fromx, fromy);
-  context.lineTo(tox, toy);
-  context.lineTo(
-    tox - headlen * Math.cos(angle - Math.PI / 6),
-    toy - headlen * Math.sin(angle - Math.PI / 6)
-  );
-  context.moveTo(tox, toy);
-  context.lineTo(
-    tox - headlen * Math.cos(angle + Math.PI / 6),
-    toy - headlen * Math.sin(angle + Math.PI / 6)
-  );
+  const [mouseX, mouseY] = getMousePosWithinCanvas(e);
+
+  const dx = mouseX - startX;
+  const dy = mouseY - startY;
+
+  // Update the position of the image
+  const imageInfo = imageInfos[selectedImgIndex];
+  imageInfo.x += dx;
+  imageInfo.y += dy;
+
+  draw();
+
+  // Set the new start position to the current mouse position
+  startX = mouseX;
+  startY = mouseY;
 }
 
 function submit() {
