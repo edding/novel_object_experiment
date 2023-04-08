@@ -72,8 +72,8 @@ function add_listener() {
 
   canvas.addEventListener("mousedown", handleMouseDown, false);
   canvas.addEventListener("mousemove", handleMouseMove, false);
-  canvas.addEventListener("mouseup", handleMouseUp, false);
-  canvas.addEventListener("mouseout", handleMouseOut, false);
+  canvas.addEventListener("mouseup", resetIndex, false);
+  canvas.addEventListener("mouseout", resetIndex, false);
 }
 
 function reset() {
@@ -143,14 +143,7 @@ function handleMouseDown(e) {
   }
 }
 
-// done dragging
-function handleMouseUp(e) {
-  e.preventDefault();
-  selectedImgIndex = -1;
-}
-
-// also done dragging
-function handleMouseOut(e) {
+function resetIndex(e) {
   e.preventDefault();
   selectedImgIndex = -1;
 }
