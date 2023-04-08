@@ -5,19 +5,19 @@ const fs = require('fs');
 
 
 /* POST log listing. */
-router.post('/', function(req, res, next) {
+router.post('/', function (req, res, next) {
     const data = req.body.data;
-    
-    if (!fs.existsSync('student_logs')) {
-        fs.mkdirSync('student_logs');
+
+    if (!fs.existsSync('logs')) {
+        fs.mkdirSync('logs');
     }
     csvWriter = createCsvWriter({
-        path: 'student_logs/student1' + '.csv',
+        path: 'logs/student1' + '.csv',
         header: [
-            {id: 'page', title: 'page'},
-            {id: 'img_id', title: 'img_id'},
-            {id: 'x', title: 'x'},
-            {id: 'y', title: 'y'},
+            { id: 'page', title: 'page' },
+            { id: 'img_id', title: 'img_id' },
+            { id: 'x', title: 'x' },
+            { id: 'y', title: 'y' },
         ],
         append: true
     });
