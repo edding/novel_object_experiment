@@ -1,198 +1,169 @@
-var canvas, ctx, isDown, offsetX, offsetY, startX, startY;
+var ctx, isDown, offsetX, offsetY, startX, startY;
 var storedLines = [];
-var mode = 'drag';
-var texts = [];
-var text_up_down_pad = 5;
-var text_left_right_pad = 5;
+var mode = "drag";
+var imageInfos = [];
+var images = [];
+
 var drawFromText = -1;
 var selectedText = -1;
-const IMAGE_SIZE = 30;
 
+// Image settings
+const IMAGE_SIZE = 30;
+const PADDING = 5;
+
+// Canvas setting
 const WIDTH = 1000;
 const HEIGHT = 600;
 const SCALE = 2;
 
-function init_text() {
-    text_list = ["obj1", "obj2", "obj3", "obj4", "obj5"];   // change the diagram by changing the text_list here, or you can pass in a text_list to the function
+const N_IMAGES = 30;
 
-    texts = [];
-    for (let i = 0; i < text_list.length; i++) {
-        texts.push({
-            text: text_list[i],
-        });
-    }
+function init_images() {
+  // Load images and setup imageInfos for tracking the position of images
+  imageInfos = [];
+  let current_y = 100;
+  for (let i = 1; i <= 5; i++) {
+    // Load image
+    const img = new Image();
+    img.src = "images/objects/" + i + ".PNG";
+    img.onload = draw; // Call `draw` when the image is loaded
+    images.push(img);
 
-    let cur_y = 100;
-    for (var i = 0; i < texts.length; i++) {
-        var text = texts[i];
-        text.width = SCALE * IMAGE_SIZE
-        text.height = SCALE * IMAGE_SIZE;
+    // Stores the infomration of the bounding box
+    // and position of the image
+    imageInfos.push({
+      text: "obj" + i,
 
-        text.x = WIDTH / 2 - IMAGE_SIZE;
-        text.y = cur_y;
-        cur_y += SCALE * IMAGE_SIZE + 2 * text_up_down_pad + 10;
-    }
+      // Bounding box
+      x: WIDTH / 2 - IMAGE_SIZE - PADDING,
+      y: current_y,
+      width: SCALE * IMAGE_SIZE + 2 * PADDING,
+      height: SCALE * IMAGE_SIZE + 2 * PADDING,
+
+      // Image
+      image_width: SCALE * IMAGE_SIZE,
+      image_height: SCALE * IMAGE_SIZE,
+    });
+
+    current_y += SCALE * IMAGE_SIZE + 2 * PADDING + 10;
+  }
 }
 
-
 function start() {
-    canvas = document.getElementById("canvas");
-    canvas.width = WIDTH * SCALE;
-    canvas.height = HEIGHT * SCALE;
+  const canvas = document.getElementById("canvas");
+  canvas.width = WIDTH * SCALE;
+  canvas.height = HEIGHT * SCALE;
 
-    ctx = canvas.getContext("2d");
-    ctx.scale(SCALE, SCALE)
+  ctx = canvas.getContext("2d");
+  ctx.scale(SCALE, SCALE);
 
-    // variables used to get mouse position on the canvas
-    reset_offset();
+  // variables used to get mouse position on the canvas
+  reset_offset();
 
-    // START: draw all texts to the canvas
-    reset();
-    add_listener();
-
-    // $('#next').mouseup(function(event) {
-    //     $('#next').unbind('mouseup');
-    //     // next step here
-    // });
+  // START: draw all texts to the canvas
+  reset();
+  add_listener();
 }
 
 function set_mode(m) {
-    mode = m;
+  mode = m;
 }
 
 function add_listener() {
-    canvas = document.getElementById("canvas");
+  const canvas = document.getElementById("canvas");
 
-    canvas.addEventListener("mousedown", handleMouseDown, false);
-    canvas.addEventListener("mousemove", handleMouseMove, false);
-    canvas.addEventListener("mouseup", handleMouseUp, false);
-    canvas.addEventListener("mouseout", handleMouseOut, false);
+  canvas.addEventListener("mousedown", handleMouseDown, false);
+  canvas.addEventListener("mousemove", handleMouseMove, false);
+  canvas.addEventListener("mouseup", handleMouseUp, false);
+  canvas.addEventListener("mouseout", handleMouseOut, false);
 
-    // Add active class to the current button (highlight it)
-    var btns = document.getElementsByClassName("btn");
-    for (var i = 0; i < btns.length - 2; i++) {
-        btns[i].addEventListener("click", function () {
-            var current = document.getElementsByClassName("active");
-            if (current.length > 0) {
-                current[0].className = current[0].className.replace(" active", "");
-            }
-            this.className += " active";
-        });
-    }
+  // Add active class to the current button (highlight it)
+  var btns = document.getElementsByClassName("btn");
+  for (var i = 0; i < btns.length - 2; i++) {
+    btns[i].addEventListener("click", function () {
+      var current = document.getElementsByClassName("active");
+      if (current.length > 0) {
+        current[0].className = current[0].className.replace(" active", "");
+      }
+      this.className += " active";
+    });
+  }
 }
-
 
 function reset_offset() {
-    let rect = canvas.getBoundingClientRect();
-    offsetX = rect.left;
-    offsetY = rect.top;
+  const canvas = document.getElementById("canvas");
+  let rect = canvas.getBoundingClientRect();
+  offsetX = rect.left;
+  offsetY = rect.top;
 }
-
 
 function reset() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    storedLines = [];
-    init_text();
-    draw();
-    set_mode("drag");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  storedLines = [];
+  init_images();
+  draw();
+  set_mode("drag");
 
-    // change active button
-    var current = document.getElementsByClassName("active");
-    if (current.length > 0) {
-        current[0].className = current[0].className.replace(" active", "");
-    }
-    var dragBtn = document.getElementById("dragText");
-    dragBtn.className += " active";
+  // change active button
+  var current = document.getElementsByClassName("active");
+  if (current.length > 0) {
+    current[0].className = current[0].className.replace(" active", "");
+  }
+  var dragBtn = document.getElementById("dragText");
+  dragBtn.className += " active";
 }
 
-
-function move_attached_lines() {
-    var cleanedStoredLines = []
-    for (var i = 0; i < storedLines.length; i++) {
-        var hit1 = -1;
-        var hit2 = -1;
-        for (var j = 0; j < texts.length; j++) {
-            if (textHittest(storedLines[i].x1, storedLines[i].y1, j)) {
-                hit1 = j;
-            }
-            if (textHittest(storedLines[i].x2, storedLines[i].y2, j)) {
-                hit2 = j;
-            }
-        }
-        if (hit1 >= 0 && hit2 >= 0 && hit1 !== hit2) {
-            cleanedStoredLines.push(storedLines[i])
-        }
-    }
-    storedLines = cleanedStoredLines;
-}
-
-
-// clear the canvas draw all texts
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (var i = 0; i < texts.length; i++) {
-        var text = texts[i];
+  const canvas = document.getElementById("canvas");
 
-        // draw rectangle around text
-        ctx.strokeStyle = "grey";
-        ctx.lineWidth = 1;
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        rect_bound = [
-            (text.x - text_left_right_pad),
-            (text.y - text_up_down_pad),
-            (IMAGE_SIZE * SCALE + 2 * text_left_right_pad),
-            (2 * text_up_down_pad + IMAGE_SIZE * SCALE)
-        ]
-        ctx.strokeRect(...rect_bound);
+  // Draw all images
+  for (let i = 0; i < imageInfos.length; i++) {
+    const imageInfo = imageInfos[i];
 
-        // Fill the rectangle
-        // Note: need to figure out the z index before uncommenting this
-        // ctx.fillStyle = "white";
-        // ctx.fillRect(...rect_bound);
+    // Draw the bounding box
+    ctx.strokeStyle = "grey";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(imageInfo.x, imageInfo.y, imageInfo.width, imageInfo.height);
+    // ctx.fillStyle = "white";
+    // ctx.fillRect(...rect_bound);
 
-        // ctx.fillText(text.text, text.x, text.y);
-        let imgId = text.text;
-        let img = document.getElementById(imgId);
-        ctx.drawImage(img, text.x, text.y, SCALE * IMAGE_SIZE, SCALE * IMAGE_SIZE);
-        ctx.imageSmoothingEnabled = true;
-    }
-
-    move_attached_lines();
-    if (storedLines.length == 0) {
-        return;
-    }
-
-    // redraw each stored line
-    ctx.strokeStyle = "orange";
-    ctx.lineWidth = 3;
-    for (var i = 0; i < storedLines.length; i++) {
-        ctx.beginPath();
-        // ctx.moveTo(storedLines[i].x1, storedLines[i].y1);
-        // ctx.lineTo(storedLines[i].x2, storedLines[i].y2);
-        canvas_arrow(ctx, storedLines[i].x1, storedLines[i].y1, storedLines[i].x2, storedLines[i].y2);
-        ctx.stroke();
-    }
+    const img = images[i];
+    ctx.drawImage(
+      img,
+      imageInfo.x + PADDING,
+      imageInfo.y + PADDING,
+      imageInfo.image_height,
+      imageInfo.image_width
+    );
+    ctx.imageSmoothingEnabled = true;
+  }
 }
 
 // test if x,y is inside the bounding box of texts[textIndex]
 function textHittest(x, y, textIndex) {
-    var text = texts[textIndex];
-    return (x >= text.x - text_left_right_pad && x <= text.x + IMAGE_SIZE * 2 + text_left_right_pad
-        && y >= text.y - text_up_down_pad && y <= text.y + IMAGE_SIZE * 2 + text_up_down_pad);
+  var text = imageInfos[textIndex];
+  return (
+    x >= text.x - PADDING &&
+    x <= text.x + IMAGE_SIZE * 2 + PADDING &&
+    y >= text.y - PADDING &&
+    y <= text.y + IMAGE_SIZE * 2 + PADDING
+  );
 }
 
-
 function redo() {
-    switch (mode) {
-        case 'drag':
-            break;
-        case 'draw':
-            storedLines.pop()
-            draw();
-            break;
-        default:
-        // code block
-    }
+  switch (mode) {
+    case "drag":
+      break;
+    case "draw":
+      storedLines.pop();
+      draw();
+      break;
+    default:
+    // code block
+  }
 }
 
 // handle mousedown events
@@ -200,101 +171,103 @@ function redo() {
 // mousedown'ed on one of them
 // If yes, set the selectedText to the index of that text
 function handleMouseDown(e) {
-    reset_offset();
-    e.preventDefault();
-    switch (mode) {
-        case 'drag':
-            startX = parseInt(e.clientX - offsetX);
-            startY = parseInt(e.clientY - offsetY);
+  reset_offset();
+  e.preventDefault();
+  switch (mode) {
+    case "drag":
+      startX = parseInt(e.clientX - offsetX);
+      startY = parseInt(e.clientY - offsetY);
 
-            for (var i = 0; i < texts.length; i++) {
-                if (textHittest(startX, startY, i)) {
-                    selectedText = i;
-                }
-            }
+      for (var i = 0; i < imageInfos.length; i++) {
+        if (textHittest(startX, startY, i)) {
+          selectedText = i;
+        }
+      }
 
-            break;
-        case 'draw':
-            var mouseX = parseInt(e.clientX - offsetX);
-            var mouseY = parseInt(e.clientY - offsetY);
-            drawFromText = -1;
-            for (var i = 0; i < texts.length; i++) {
-                if (textHittest(mouseX, mouseY, i)) {
-                    drawFromText = i;
-                }
-            }
+      break;
+    case "draw":
+      var mouseX = parseInt(e.clientX - offsetX);
+      var mouseY = parseInt(e.clientY - offsetY);
+      drawFromText = -1;
+      for (var i = 0; i < imageInfos.length; i++) {
+        if (textHittest(mouseX, mouseY, i)) {
+          drawFromText = i;
+        }
+      }
 
-            if (drawFromText < 0) {
-                break;
-            }
+      if (drawFromText < 0) {
+        break;
+      }
 
-            e.stopPropagation();
+      e.stopPropagation();
 
-            isDown = true;
-            startX = mouseX;
-            startY = mouseY;
-            break;
-        default:
-        // code block
-    }
+      isDown = true;
+      startX = mouseX;
+      startY = mouseY;
+      break;
+    default:
+    // code block
+  }
 }
 
 // done dragging
 function handleMouseUp(e) {
-    e.preventDefault();
-    switch (mode) {
-        case 'drag':
-            selectedText = -1;
-            break;
-        case 'draw':
-            var mouseX = parseInt(e.clientX - offsetX);
-            var mouseY = parseInt(e.clientY - offsetY);
-            var drawToText = -1;
-            for (var i = 0; i < texts.length; i++) {
-                if (textHittest(mouseX, mouseY, i)) {
-                    drawToText = i;
-                }
-            }
+  e.preventDefault();
+  switch (mode) {
+    case "drag":
+      selectedText = -1;
+      break;
+    case "draw":
+      var mouseX = parseInt(e.clientX - offsetX);
+      var mouseY = parseInt(e.clientY - offsetY);
+      var drawToText = -1;
+      for (var i = 0; i < imageInfos.length; i++) {
+        if (textHittest(mouseX, mouseY, i)) {
+          drawToText = i;
+        }
+      }
 
-            e.stopPropagation();
+      e.stopPropagation();
 
-            isDown = false;
+      isDown = false;
 
-            if (drawToText >= 0 && drawFromText >= 0 && drawToText !== drawFromText) {
-                storedLines.push({
-                    x1: startX,
-                    y1: startY,
-                    x2: mouseX,
-                    y2: mouseY
-                });
-            }
+      if (drawToText >= 0 && drawFromText >= 0 && drawToText !== drawFromText) {
+        storedLines.push({
+          x1: startX,
+          y1: startY,
+          x2: mouseX,
+          y2: mouseY,
+        });
+      }
 
-            draw();
-            break;
-        default:
-        // code block
-    }
+      draw();
+      break;
+    default:
+    // code block
+  }
 }
 
 // also done dragging
 function handleMouseOut(e) {
-    e.preventDefault();
-    switch (mode) {
-        case 'drag':
-            selectedText = -1;
-            break;
-        case 'draw':
-            e.stopPropagation();
+  e.preventDefault();
+  switch (mode) {
+    case "drag":
+      selectedText = -1;
+      break;
+    case "draw":
+      e.stopPropagation();
 
-            if (!isDown) { return; }
+      if (!isDown) {
+        return;
+      }
 
-            isDown = false;
+      isDown = false;
 
-            draw();
-            break;
-        default:
-        // code block
-    }
+      draw();
+      break;
+    default:
+    // code block
+  }
 }
 
 // handle mousemove events
@@ -302,90 +275,94 @@ function handleMouseOut(e) {
 // the last mousemove event and move the selected text
 // by that distance
 function handleMouseMove(e) {
-    e.preventDefault();
-    switch (mode) {
-        case 'drag':
-            if (selectedText < 0) {
-                return;
-            }
-            mouseX = parseInt(e.clientX - offsetX);
-            mouseY = parseInt(e.clientY - offsetY);
+  e.preventDefault();
+  switch (mode) {
+    case "drag":
+      if (selectedText < 0) {
+        return;
+      }
+      mouseX = parseInt(e.clientX - offsetX);
+      mouseY = parseInt(e.clientY - offsetY);
 
-            // Put your mousemove stuff here
-            var dx = mouseX - startX;
-            var dy = mouseY - startY;
-            startX = mouseX;
-            startY = mouseY;
+      // Put your mousemove stuff here
+      var dx = mouseX - startX;
+      var dy = mouseY - startY;
+      startX = mouseX;
+      startY = mouseY;
 
-            var text = texts[selectedText];
-            text.x += dx;
-            text.y += dy;
-            draw();
-            break;
-        case 'draw':
-            e.stopPropagation();
+      var text = imageInfos[selectedText];
+      text.x += dx;
+      text.y += dy;
+      draw();
+      break;
+    case "draw":
+      e.stopPropagation();
 
-            if (!isDown) {
-                return;
-            }
+      if (!isDown) {
+        return;
+      }
 
-            draw();
+      draw();
 
-            var mouseX = parseInt(e.clientX - offsetX);
-            var mouseY = parseInt(e.clientY - offsetY);
+      var mouseX = parseInt(e.clientX - offsetX);
+      var mouseY = parseInt(e.clientY - offsetY);
 
-            // draw the current line
-            ctx.beginPath();
-            // ctx.moveTo(startX, startY);
-            // ctx.lineTo(mouseX, mouseY);
-            canvas_arrow(ctx, startX, startY, mouseX, mouseY);
-            ctx.stroke()
-            break;
-        default:
-        // code block
-    }
+      // draw the current line
+      ctx.beginPath();
+      // ctx.moveTo(startX, startY);
+      // ctx.lineTo(mouseX, mouseY);
+      canvas_arrow(ctx, startX, startY, mouseX, mouseY);
+      ctx.stroke();
+      break;
+    default:
+    // code block
+  }
 }
-
 
 function canvas_arrow(context, fromx, fromy, tox, toy) {
-    ctx.strokeStyle = "orange";
-    ctx.lineWidth = 3;
-    var headlen = 10; // length of head in pixels
-    var dx = tox - fromx;
-    var dy = toy - fromy;
-    var angle = Math.atan2(dy, dx);
-    context.moveTo(fromx, fromy);
-    context.lineTo(tox, toy);
-    context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-    context.moveTo(tox, toy);
-    context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+  ctx.strokeStyle = "orange";
+  ctx.lineWidth = 3;
+  var headlen = 10; // length of head in pixels
+  var dx = tox - fromx;
+  var dy = toy - fromy;
+  var angle = Math.atan2(dy, dx);
+  context.moveTo(fromx, fromy);
+  context.lineTo(tox, toy);
+  context.lineTo(
+    tox - headlen * Math.cos(angle - Math.PI / 6),
+    toy - headlen * Math.sin(angle - Math.PI / 6)
+  );
+  context.moveTo(tox, toy);
+  context.lineTo(
+    tox - headlen * Math.cos(angle + Math.PI / 6),
+    toy - headlen * Math.sin(angle + Math.PI / 6)
+  );
 }
 
-
 function submit() {
-    console.log("------ Logged Position ------")
-    for (var i = 0; i < texts.length; i++) {
-        var text = texts[i];
-        let x = text.x + IMAGE_SIZE + text_left_right_pad;
-        let y = text.y + IMAGE_SIZE + text_up_down_pad;
-        let imgId = text.text;
-        console.log("%s position: (%f, %f)", imgId, x, y);
-    }
+  console.log("------ Logged Position ------");
+  for (var i = 0; i < imageInfos.length; i++) {
+    var text = imageInfos[i];
+    let x = text.x + IMAGE_SIZE + PADDING;
+    let y = text.y + IMAGE_SIZE + PADDING;
+    let imgId = text.text;
+    console.log("%s position: (%f, %f)", imgId, x, y);
+  }
 
-    var data = [];
-    for (var i = 0; i < texts.length; i++) {
-        var text = texts[i];
-        let x = text.x + IMAGE_SIZE + text_left_right_pad;
-        let y = text.y + IMAGE_SIZE + text_up_down_pad;
-        let imgId = text.text;
-        data.push({ page: "1", img_id: imgId, x: x, y: y });
-    }
+  var data = [];
+  for (var i = 0; i < imageInfos.length; i++) {
+    var text = imageInfos[i];
+    let x = text.x + IMAGE_SIZE + PADDING;
+    let y = text.y + IMAGE_SIZE + PADDING;
+    let imgId = text.text;
+    data.push({ page: "1", img_id: imgId, x: x, y: y });
+  }
 
-    fetch('/log', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ "data": data })
-    });
+  fetch("/log", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ data: data }),
+  });
 }
