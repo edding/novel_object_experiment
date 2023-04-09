@@ -15,10 +15,16 @@ const WIDTH = 1000;
 const HEIGHT = 600;
 const SCALE = 2;
 
-// Experimetn settings
+// Experiment settings
 const N_IMAGES_PER_TRAIL = 16;
+const N_ROWS = 4;
+const N_COLS = 4;
+
 const N_TOTAL_IMAGES = 30;
 const N_TRAILS = 5;
+
+// Random image ids from the current trail
+var random_image_ids = [];
 
 // Webpage onload entry point
 function start() {
@@ -31,21 +37,30 @@ function start() {
   const ctx = canvas.getContext("2d");
   ctx.scale(SCALE, SCALE);
 
+  random_image_ids = generateRandomImageIds();
   reset();
   add_listener();
 }
 
-function getInitialImagePosition(index, totalRows, totalCols) {
-  row = Math.floor(index / totalCols);
-  col = index % totalCols;
+function generateRandomImageIds() {
+  let numbers = [];
+  for (let i = 1; i <= N_TOTAL_IMAGES; i++) {
+    numbers.push(i);
+  }
+  numbers.sort(() => Math.random() - 0.5);
+  return numbers.slice(0, N_IMAGES_PER_TRAIL);
+}
 
-  // Get the total width and height of required
-  // for placing totalRows * totalCols images with a padding of 10px
+function getInitialImagePosition(index) {
+  row = Math.floor(index / N_COLS);
+  col = index % N_COLS;
+
+  // Get the total width and height of required to draw all images
   const padding = 50;
   const totalWidth =
-    totalCols * (SCALE * IMAGE_SIZE + 2 * PADDING) + (totalCols - 1) * padding;
+    N_COLS * (SCALE * IMAGE_SIZE + 2 * PADDING) + (N_COLS - 1) * padding;
   const totalHeight =
-    totalRows * (SCALE * IMAGE_SIZE + 2 * PADDING) + (totalRows - 1) * padding;
+    N_ROWS * (SCALE * IMAGE_SIZE + 2 * PADDING) + (N_ROWS - 1) * padding;
 
   // Center the whole image grid
   const originX = (WIDTH - totalWidth) / 2;
@@ -61,11 +76,11 @@ function getInitialImagePosition(index, totalRows, totalCols) {
 function init_images() {
   // Load images and setup imageInfos for tracking the position of images
   imageInfos = [];
-  let current_y = 100;
   for (let i = 1; i <= N_IMAGES_PER_TRAIL; i++) {
     // Load image
     const img = new Image();
-    img.src = "images/objects/" + i + ".PNG";
+    const idx = random_image_ids[i - 1];
+    img.src = "images/objects/" + idx + ".PNG";
     img.onload = draw; // Call `draw` when the image is loaded
     images.push(img);
 
@@ -73,7 +88,7 @@ function init_images() {
     // and position of the image
     [initialX, initialY] = getInitialImagePosition(i - 1, 4, 4);
     imageInfos.push({
-      text: "obj" + i,
+      text: "obj" + idx,
 
       // Bounding box
       x: initialX,
@@ -86,8 +101,6 @@ function init_images() {
       image_width: SCALE * IMAGE_SIZE,
       image_height: SCALE * IMAGE_SIZE,
     });
-
-    current_y += SCALE * IMAGE_SIZE + 2 * PADDING + 10;
   }
 }
 
