@@ -5,9 +5,13 @@ html(lang='en')
     title #{title}
     link(rel='stylesheet', href='stylesheets/style.css')
   body(onload='start()')
-    #canvas-container
-      canvas#canvas(width='1000px', height='600px')
-    #buttons
-      #reset.btn(onclick='reset()') Reset
-      #submit.btn(onclick='submit()') Submit
+    #container
+      #canvas-container
+        canvas#canvas(width='1000px', height='600px')
+      #buttons
+        #reset.btn(onclick='reset()') Reset
+        #submit.btn(onclick='submit()') Submit
+        #next.btn(onclick='next()') →
+    script. 
+      const id = #{id}
     script(src='javascripts/trial.js')

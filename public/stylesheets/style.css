@@ -11,6 +11,12 @@ body {
     background-color: white;
 }
 
+#container {
+    margin: 0 auto;
+    width: 1080px;
+    height: 700px;
+}
+
 #canvas {
     border: 1px solid black;
     max-width: 100%;
@@ -26,6 +32,7 @@ body {
 
 #buttons {
     float: right;
+    margin: 10px 72px;
 }
 
 .btn {
@@ -46,4 +53,20 @@ body {
 
 .hide {
     visibility: hidden;
+}
+
+#next {
+    background-color: rgb(1, 176, 1);
+}
+
+#next:hover {
+    background: rgb(0, 102, 0);
+}
+
+#reset {
+    background-color: rgb(142, 142, 142);
+}
+
+#reset:hover {
+    background: rgb(81, 81, 81);
 }

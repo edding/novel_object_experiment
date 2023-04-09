@@ -21,7 +21,17 @@ const N_ROWS = 4;
 const N_COLS = 4;
 
 const N_TOTAL_IMAGES = 30;
-const N_TRAILS = 5;
+const N_TRAILS = 6;
+
+// Trails
+const trials = [
+  [1, 2, 3, 4, 8, 11, 12, 13, 15, 17, 18, 20, 21, 22, 23, 24],
+  [3, 4, 5, 7, 10, 12, 14, 15, 16, 19, 23, 24, 25, 27, 29, 30],
+  [1, 2, 5, 6, 8, 9, 10, 11, 12, 16, 17, 19, 21, 25, 26, 28, 29],
+  [1, 2, 4, 6, 7, 9, 11, 14, 18, 20, 21, 23, 25, 27, 28, 30],
+  [3, 6, 8, 9, 13, 14, 15, 17, 20, 22, 24, 26, 27, 28, 29, 30],
+  [4, 5, 7, 8, 10, 13, 16, 17, 18, 19, 20, 22, 23, 25, 26, 29],
+];
 
 // Random image ids from the current trail
 var random_image_ids = [];
@@ -37,18 +47,16 @@ function start() {
   const ctx = canvas.getContext("2d");
   ctx.scale(SCALE, SCALE);
 
-  random_image_ids = generateRandomImageIds();
+  random_image_ids = generateImageIds();
   reset();
   add_listener();
 }
 
-function generateRandomImageIds() {
-  let numbers = [];
-  for (let i = 1; i <= N_TOTAL_IMAGES; i++) {
-    numbers.push(i);
-  }
-  numbers.sort(() => Math.random() - 0.5);
-  return numbers.slice(0, N_IMAGES_PER_TRAIL);
+function generateImageIds() {
+  // The `id` variable is injected from the jade template
+  var trail = trials[id - 1];
+  trail.sort(() => Math.random() - 0.5);
+  return trail;
 }
 
 function getInitialImagePosition(index) {
@@ -237,4 +245,12 @@ function submit() {
     },
     body: JSON.stringify({ data: data }),
   });
+}
+
+function next() {
+  if (id >= N_TRAILS) {
+    window.location.href = "/completed";
+  } else {
+    window.location.href = "/trial/" + (id + 1);
+  }
 }
