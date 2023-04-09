@@ -1,0 +1,13 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title #{title}
+    link(rel='stylesheet', href='stylesheets/style.css')
+  body(onload='start()')
+    #canvas-container
+      canvas#canvas(width='1000px', height='600px')
+    #buttons
+      #reset.btn(onclick='reset()') Reset
+      #submit.btn(onclick='submit()') Submit
+    script(src='javascripts/trial.js')

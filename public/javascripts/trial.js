@@ -97,7 +97,6 @@ function init_images() {
       height: SCALE * IMAGE_SIZE + 2 * PADDING,
 
       // Image
-      // TODO(edwardd): Keep the original image ratio
       image_width: SCALE * IMAGE_SIZE,
       image_height: SCALE * IMAGE_SIZE,
     });
