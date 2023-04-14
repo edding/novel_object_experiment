@@ -1,5 +1,18 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Novel Object Study: Weclome
+    link(rel='stylesheet', href='stylesheets/style.css')
+    script(src='javascripts/index.js')
+  body()
+    p This expriment assesses perceived similarity. It will take about 30 minutes to complete.
+    p In this study you will: 
+    ol
+      li See some objects and answer a few questions about them.
+      li See a goup of objects and rearrange their position to group similar objects together.
+    
+    form(action="/", method="post")
+      input#uid_input(type="text", name="uid", placeholder="Enter your 9 digits ID" oninput='validateInput()')
+      button#uid_submit(type="submit" disabled) →
+    
