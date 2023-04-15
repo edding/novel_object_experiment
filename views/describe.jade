@@ -1,27 +1,63 @@
-doctype html
-html
-  head
-    meta(charset='UTF-8')
-    title Novel Object Study
-    link(rel='stylesheet', href='stylesheets/style.css')
+extends layout 
+
+block content 
   body
-    //- Header
-    h1 Object #{id} / 30
+    h3 Object #{id} / 30      
     
     img(src='images/objects/#{id}.PNG' alt='Image' style='width: 200px; height: 200px;')
+    br
+    br
+
     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);")
-      p Have you seen this object before?
-      label
+      p 1. Have you seen this object before?
+      
+      label.radio
         input(type='radio' name='seen' value='yes') 
-        | Yes
-      label
+        span.black-text.radio-label Yes
+      
+      label.radio
         input(type='radio' name='seen' value='no')
-        | No
-      p If yes, what is it? If no, please provide a description of this object in a short sentence.
-      input(type='text' id='description' name='description' placeholder="Describe this object in a short sentence.")
-      input(type="hidden" name="id" value='#{id}')
+        span.black-text.radio-label No
+      
       br
-      button#describeSubmit →
+      br
+      p 2. If yes, what is it? If no, please provide a description of this object in a short sentence.
+      input#description(type='text' name='description' placeholder="Describe this object in a short sentence.")
+      
+      input(type="hidden" name="id" value='#{id}')
+      
+      br
+      br
+      button.waves-effect.waves-light.btn Next
+    
     script. 
         const id = #{id};
     script(src='javascripts/describe.js')
+
+//- doctype html
+//- html
+//-   head
+//-     meta(charset='UTF-8')
+//-     title Novel Object Study
+//-     link(rel='stylesheet', href='stylesheets/style.css')
+//-   body
+//-     //- Header
+//-     h1 Object #{id} / 30
+    
+//-     img(src='images/objects/#{id}.PNG' alt='Image' style='width: 200px; height: 200px;')
+//-     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);")
+//-       p Have you seen this object before?
+//-       label
+//-         input(type='radio' name='seen' value='yes') 
+//-         | Yes
+//-       label
+//-         input(type='radio' name='seen' value='no')
+//-         | No
+//-       p If yes, what is it? If no, please provide a description of this object in a short sentence.
+//-       input(type='text' id='description' name='description' placeholder="Describe this object in a short sentence.")
+//-       input(type="hidden" name="id" value='#{id}')
+//-       br
+//-       button#describeSubmit →
+//-     script. 
+//-         const id = #{id};
+//-     script(src='javascripts/describe.js')

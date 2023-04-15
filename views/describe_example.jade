@@ -1,10 +1,11 @@
-doctype html
-html(lang='en')
-  head
-    meta(charset='UTF-8')
-    title Novel Object Study
-    link(rel='stylesheet', href='stylesheets/style.css')
-  body()
-    h1 Example Object
-    img(src='images/describe_example.PNG' style='width: 800px; height: auto;')
-    #next.btn(onclick="window.location.href='/describe/1';") →
+extends layout 
+
+block content 
+  body
+    h3 Part 1 Example
+    
+    .card#example-object-card
+        .card-image
+        img(src='images/describe_example.PNG' style='width: 800px; height: auto;')
+        
+    a.waves-effect.waves-light.btn(onclick="window.location.href='/describe/1';") Next

@@ -1,11 +1,8 @@
-doctype html
-html(lang='en')
-  head
-    meta(charset='UTF-8')
-    title Novel Object Study
-    link(rel='stylesheet', href='stylesheets/style.css')
-    script(src='javascripts/index.js')
-  body()
+extends layout 
+
+block content 
+  body
+    h2 Novel Object Study
     p This expriment assesses perceived similarity. It will take about 30 minutes to complete.
     p In this study you will: 
     ol
@@ -13,6 +10,13 @@ html(lang='en')
       li See a goup of objects and rearrange their position to group similar objects together.
     
     form(action="/", method="post")
-      input#uid_input(type="text", name="uid", placeholder="Enter your 9 digits ID" oninput='validateInput()')
-      button#uid_submit(type="submit" disabled) →
+      input#uid_input.text_input(
+        type="text", 
+        name="uid", 
+        placeholder="Enter your 9 digits ID" 
+        oninput='validateInput()'
+      ) 
+      br
+      button#uid_submit.btn.waves-effect.waves-light(type="submit" disabled) Next
     
+    script(src='javascripts/index.js')

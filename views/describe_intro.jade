@@ -1,10 +1,12 @@
-doctype html
-html(lang='en')
-  head
-    meta(charset='UTF-8')
-    title Novel Object Study
-    link(rel='stylesheet', href='stylesheets/style.css')
-  body()
-    p In the first part of the study, you will see pictures of 30 3-D objects and answer some questions basd on each of them. Please click the arrow to see an exmaple.
-      #next.btn(onclick="window.location.href='/describe/example';") →
+extends layout 
+
+block content
+  body
+    h3 Part 1: Recognize Novel Objects
+    p
+      | In the first part of the study, you will see pictures of 30 3-D objects and answer some questions basd on each of them. 
+      br
+      |Please click the arrow to see an exmaple.
+    
+    a.waves-effect.waves-light.btn(onclick="window.location.href='/describe/example';") Next
     

@@ -1,17 +1,8 @@
 body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 20px;
 }
 
-a {
-    color: #00B7FF;
-}
-
-body {
-    background-color: white;
-}
-
-#container {
+.container {
     margin: 0 auto;
     width: 1080px;
     height: 700px;
@@ -28,27 +19,6 @@ body {
     width: 1000px;
     height: 600px;
     display: block;
-}
-
-#buttons {
-    float: right;
-    margin: 10px 72px;
-}
-
-.btn {
-    border: none;
-    padding: 14px 28px;
-    margin: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    display: inline-block;
-    background-color: #2196F3;
-    color: white;
-}
-
-.btn:hover {
-    background: #0b4d83;
-    color: white;
 }
 
 .hide {
@@ -69,4 +39,55 @@ body {
 
 #reset:hover {
     background: rgb(81, 81, 81);
+}
+
+#uid_input {
+    width: 400px;
+}
+
+/* .btn {
+    width: 150px;
+    margin: 0 20px 0 0;
+    background-color: #388e3c;
+}
+
+.btn:hover {
+    background-color: #4caf50
+} */
+
+#example-object-card {
+    width: 800px;
+}
+
+#object-card {
+    width: 300px;
+    height: 300px;
+}
+
+.radio {
+    margin: 0 10px;
+}
+
+#description {
+    width: 800px;
+}
+
+#example-trial-card {
+    width: 1200px;
+}
+
+#reset-button {
+    background-color: #757575 
+}
+
+#reset-button:hover {
+    background-color: #9e9e9e 
+}
+
+.radio-label {
+    width: 100px;
+}
+
+#survey_input {
+    width: 500px;
 }

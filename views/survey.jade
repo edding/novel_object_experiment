@@ -1,32 +1,31 @@
-doctype html
-html(lang='en')
-  head
-    meta(charset='UTF-8')
-    title Novel Object Study
-    link(rel='stylesheet', href='stylesheets/style.css')
-  body()
-    h1 End of Experiment Survey
+extends layout 
+
+block content 
+  body
+    h3 End of Experiment Survey
     p You've completed all tasks. Thanks for participating! Please fill this survey and submit your response.
     
     form(action="/log/survey", method="post")
-      //- Gender
       p Gender:
-      label
-        input(type='radio' name='gender' value='Male') 
-        | Male
-      label
-        input(type='radio' name='gender' value='Female')
-        | Female
-      label
-        input(type='radio' name='gender' value='Others')
-        | Others
+      label.radio
+        input(type='radio' name='gender' value='male') 
+        span.black-text.radio-label Male
       
+      label.radio
+        input(type='radio' name='gender' value='female') 
+        span.black-text.radio-label Female
+      
+      label.radio
+        input(type='radio' name='gender' value='others') 
+        span.black-text.radio-label Others
+
       p Age:
-        input(type='number' name='age' min='0' max='100' placeholder='Age')
+        br
+        input.survey_text#survey_input(type='number' name='age' min='0' max='100' placeholder='Age')
     
       p Email: 
-        input(type='email' name='email' placeholder='Email')
+        br
+        input.survey_text#survey_input(type='email' name='email' placeholder='Email')
 
       //- TODO: Add more questions here
-
-      button(type="submit") Submit Response
+      button.btn.waves-effect.waves-light(type="submit") Submit Response

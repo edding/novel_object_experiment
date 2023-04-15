@@ -1,17 +1,17 @@
-doctype html
-html(lang='en')
-  head
-    meta(charset='UTF-8')
-    title #{title}
-    link(rel='stylesheet', href='stylesheets/style.css')
+extends layout
+
+block content
   body(onload='start()')
-    h1 Trial #{id} / 6
-    #container
+    h3 Trial #{id} / 6
+    .container
       #canvas-container
         canvas#canvas(width='1000px', height='600px')
+      
+      br
       #buttons
-        #reset.btn(onclick='reset()') Reset
-        #next.btn(onclick='next()') →
+        a.waves-effect.waves-light.btn#reset-button(onclick='reset()') Reset
+        a.waves-effect.waves-light.btn(onclick='next()') Next
+    
     script. 
       const id = #{id}
     script(src='javascripts/trial.js')
