@@ -1,4 +1,10 @@
-extends layout
-
-block content
-  h1= "here"
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Novel Object Study
+    link(rel='stylesheet', href='stylesheets/style.css')
+  body()
+    p In the first part of the study, you will see pictures of 30 3-D objects and answer some questions basd on each of them. Please click the arrow to see an exmaple.
+      #next.btn(onclick="window.location.href='/describe/example';") →
+    
