@@ -15,7 +15,7 @@ router.get("/example", function (req, res, next) {
 
 router.get("/:id", function (req, res, next) {
   if (req.params.id > 30) {
-    res.redirect("/completed");
+    res.redirect("/trial/intro");
   }
   res.render("describe", { id: req.params.id, isExample: false });
 });

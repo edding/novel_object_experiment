@@ -5,7 +5,14 @@ var path = require("path");
 /* Point to the public folder. */
 router.use(express.static("public"));
 
-/* GET trial page. */
+router.get("/intro", function (req, res, next) {
+  res.render("trial_intro");
+});
+
+router.get("/example", function (req, res, next) {
+  res.render("trial_example", { id: 0, isExample: true });
+});
+
 router.get("/:id", function (req, res, next) {
   res.render("trial", { id: req.params.id });
 });
