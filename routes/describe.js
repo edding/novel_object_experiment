@@ -10,14 +10,14 @@ router.get("/intro", function (req, res, next) {
 });
 
 router.get("/example", function (req, res, next) {
-  res.render("describe", { id: 0, isExample: true });
+  res.render("describe_example");
 });
 
 router.get("/:id", function (req, res, next) {
   if (req.params.id > 30) {
     res.redirect("/trial/intro");
   }
-  res.render("describe", { id: req.params.id, isExample: false });
+  res.render("describe", { id: req.params.id });
 });
 
 module.exports = router;

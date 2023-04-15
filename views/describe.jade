@@ -6,30 +6,22 @@ html
     link(rel='stylesheet', href='stylesheets/style.css')
   body
     //- Header
-    if isExample
-        h1 Example Object
-    else
-        h1 Object #{id} / 30
+    h1 Object #{id} / 30
     
     img(src='images/objects/#{id}.PNG' alt='Image' style='width: 200px; height: 200px;')
     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);")
       p Have you seen this object before?
       label
-        input(type='radio' name='seen' value='yes' disabled=isExample) 
+        input(type='radio' name='seen' value='yes') 
         | Yes
       label
-        input(type='radio' name='seen' value='no' checked=isExample disabled=isExample)
+        input(type='radio' name='seen' value='no')
         | No
       p If yes, what is it? If no, please provide a description of this object in a short sentence.
-      input(type='text' id='description' name='description' placeholder="Describe this object in a short sentence." disabled=isExample)
+      input(type='text' id='description' name='description' placeholder="Describe this object in a short sentence.")
       input(type="hidden" name="id" value='#{id}')
       br
       button#describeSubmit →
     script. 
-      if (#{isExample}) {
-        const id = 0;
-      }
-      else {
         const id = #{id};
-      }
     script(src='javascripts/describe.js')
