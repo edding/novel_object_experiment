@@ -97,6 +97,7 @@ function init_images() {
     [initialX, initialY] = getInitialImagePosition(i - 1, 4, 4);
     imageInfos.push({
       text: "obj" + idx,
+      object_id: idx,
 
       // Bounding box
       x: initialX,
@@ -219,38 +220,29 @@ function handleMouseMove(e) {
   startY = mouseY;
 }
 
-function submit() {
-  console.log("------ Logged Position ------");
-  for (var i = 0; i < imageInfos.length; i++) {
-    var text = imageInfos[i];
-    let x = text.x + IMAGE_SIZE + PADDING;
-    let y = text.y + IMAGE_SIZE + PADDING;
-    let imgId = text.text;
-    console.log("%s position: (%f, %f)", imgId, x, y);
-  }
-
-  var data = [];
-  for (var i = 0; i < imageInfos.length; i++) {
-    var text = imageInfos[i];
-    let x = text.x + IMAGE_SIZE + PADDING;
-    let y = text.y + IMAGE_SIZE + PADDING;
-    let imgId = text.text;
-    data.push({ page: "1", img_id: imgId, x: x, y: y });
-  }
-
-  fetch("/log", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ data: data }),
-  });
-}
-
 function next() {
-  if (id >= N_TRAILS) {
-    window.location.href = "/completed";
-  } else {
-    window.location.href = "/trial/" + (id + 1);
+  // Build a form to send data to the logging endpoint
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = "/log/trial/" + id;
+
+  // Build the data
+  var data = [];
+  for (const img of imageInfos) {
+    let x = img.x + IMAGE_SIZE + PADDING;
+    let y = img.y + IMAGE_SIZE + PADDING;
+    data.push(
+      JSON.stringify({ trial_id: id, object_id: img.object_id, x: x, y: y })
+    );
   }
+
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "data";
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+
+  // Submit the form
+  document.body.appendChild(form);
+  form.submit();
 }

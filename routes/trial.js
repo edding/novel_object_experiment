@@ -14,7 +14,11 @@ router.get("/example", function (req, res, next) {
 });
 
 router.get("/:id", function (req, res, next) {
-  res.render("trial", { id: req.params.id });
+  if (req.params.id > 6) {
+    res.redirect("/completed");
+  } else {
+    res.render("trial", { id: req.params.id });
+  }
 });
 
 module.exports = router;

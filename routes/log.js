@@ -6,25 +6,34 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: true }));
 
-/* POST log listing. */
-router.post("/", function (req, res, next) {
+router.post("/trial/:id", function (req, res, next) {
   const uid = req.session.uid;
-  const data = req.body.data;
+  const id = parseInt(req.params.id);
 
-  if (!fs.existsSync("logs")) {
-    fs.mkdirSync("logs");
-  }
+  // Parse data from the request
+  const dataJson = req.body.data;
+  const data = JSON.parse(dataJson);
+
+  const firstTimeWrite = !fs.existsSync("logs/trial.csv");
   csvWriter = createCsvWriter({
-    path: "logs" + uid + ".csv",
+    path: "logs/trial.csv",
     header: [
-      { id: "page", title: "page" },
-      { id: "img_id", title: "img_id" },
+      { id: "uid", title: "uid" },
+      { id: "trial_id", title: "trial_id" },
+      { id: "object_id", title: "object_id" },
       { id: "x", title: "x" },
       { id: "y", title: "y" },
     ],
-    append: true,
+    append: !firstTimeWrite,
   });
-  csvWriter.writeRecords(data); // returns a promise
+
+  records = [];
+  for (const d of data) {
+    records.push({ ...JSON.parse(d), uid: uid });
+  }
+  csvWriter
+    .writeRecords(records)
+    .then(() => res.redirect("/trial/" + (id + 1)));
 });
 
 router.post("/describe/:id", function (req, res, next) {
@@ -32,10 +41,16 @@ router.post("/describe/:id", function (req, res, next) {
   if (id > 0) {
     // 0 represents the example, there is nothing to log
     const uid = req.session.uid;
+    const firstTimeWrite = !fs.existsSync("logs/describe.csv");
     csvWriter = createCsvWriter({
       path: "logs/describe.csv",
-      header: ["uid", "object_id", "seen", "description"],
-      append: true,
+      header: [
+        { id: "uid", title: "uid" },
+        { id: "object_id", title: "object_id" },
+        { id: "seen", title: "seen" },
+        { id: "description", title: "description" },
+      ],
+      append: !firstTimeWrite,
     });
 
     const records = [
@@ -46,10 +61,12 @@ router.post("/describe/:id", function (req, res, next) {
         description: req.body.description,
       },
     ];
-    csvWriter.writeRecords(records);
+    csvWriter
+      .writeRecords(records)
+      .then(() => res.redirect("/describe/" + (id + 1)));
+  } else {
+    res.redirect("/describe/" + (id + 1));
   }
-
-  res.redirect("/describe/" + (id + 1));
 });
 
 module.exports = router;
