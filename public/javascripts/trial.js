@@ -30,6 +30,7 @@ const N_TRAILS = 6;
 const VALIDATION_THRESHOLD = 0.1;
 
 // Trails
+// TODO: Randomize the mapping from id to image
 const trials = [
   [1, 2, 3, 4, 8, 11, 12, 13, 15, 17, 18, 20, 21, 22, 23, 24],
   [3, 4, 5, 7, 10, 12, 14, 15, 16, 19, 23, 24, 25, 27, 29, 30],
