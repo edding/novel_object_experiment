@@ -69,4 +69,30 @@ router.post("/describe/:id", function (req, res, next) {
   }
 });
 
+router.post("/survey", function (req, res, next) {
+  const uid = req.session.uid;
+  const firstTimeWrite = !fs.existsSync("logs/survey.csv");
+  csvWriter = createCsvWriter({
+    path: "logs/survey.csv",
+    header: [
+      { id: "uid", title: "uid" },
+      { id: "gender", title: "gender" },
+      { id: "age", title: "age" },
+      { id: "email", title: "email" },
+    ],
+    append: !firstTimeWrite,
+  });
+
+  const records = [
+    {
+      uid: uid,
+      gender: req.body.gender,
+      age: req.body.age,
+      email: req.body.email,
+    },
+  ];
+
+  csvWriter.writeRecords(records).then(() => res.redirect("/survey/completed"));
+});
+
 module.exports = router;

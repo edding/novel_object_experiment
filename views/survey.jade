@@ -1,0 +1,32 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    title Novel Object Study
+    link(rel='stylesheet', href='stylesheets/style.css')
+  body()
+    h1 End of Experiment Survey
+    p You've completed all tasks. Thanks for participating! Please fill this survey and submit your response.
+    
+    form(action="/log/survey", method="post")
+      //- Gender
+      p Gender:
+      label
+        input(type='radio' name='gender' value='Male') 
+        | Male
+      label
+        input(type='radio' name='gender' value='Female')
+        | Female
+      label
+        input(type='radio' name='gender' value='Others')
+        | Others
+      
+      p Age:
+        input(type='number' name='age' min='0' max='100' placeholder='Age')
+    
+      p Email: 
+        input(type='email' name='email' placeholder='Email')
+
+      //- TODO: Add more questions here
+
+      button(type="submit") Submit Response

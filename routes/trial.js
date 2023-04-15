@@ -15,7 +15,7 @@ router.get("/example", function (req, res, next) {
 
 router.get("/:id", function (req, res, next) {
   if (req.params.id > 6) {
-    res.redirect("/completed");
+    res.redirect("/survey");
   } else {
     res.render("trial", { id: req.params.id });
   }
