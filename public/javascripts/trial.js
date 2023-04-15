@@ -23,6 +23,12 @@ const N_COLS = 4;
 const N_TOTAL_IMAGES = 30;
 const N_TRAILS = 6;
 
+// Validation threshold
+// Only allow proceeding to the next task
+// when at least this percentage of images are moved
+// TODO(edwardd): Change this back to 0.5, this is for testing
+const VALIDATION_THRESHOLD = 0.1;
+
 // Trails
 const trials = [
   [1, 2, 3, 4, 8, 11, 12, 13, 15, 17, 18, 20, 21, 22, 23, 24],
@@ -94,7 +100,7 @@ function init_images() {
 
     // Stores the infomration of the bounding box
     // and position of the image
-    [initialX, initialY] = getInitialImagePosition(i - 1, 4, 4);
+    [initialX, initialY] = getInitialImagePosition(i - 1);
     imageInfos.push({
       text: "obj" + idx,
       object_id: idx,
@@ -221,6 +227,22 @@ function handleMouseMove(e) {
 }
 
 function next() {
+  // Validate the current trial
+  // Only when at leaset VALIDATION_THRESHOLD of images are moved
+  // can the user proceed to the next trial
+  var nMoved = 0;
+  for (let i = 0; i < imageInfos.length; i++) {
+    if (imageHasBeenMoved(i)) {
+      nMoved++;
+    }
+  }
+  if (nMoved < VALIDATION_THRESHOLD * imageInfos.length) {
+    alert(
+      "Please complete the current task before proceeding to the next one."
+    );
+    return;
+  }
+
   // Build a form to send data to the logging endpoint
   const form = document.createElement("form");
   form.method = "POST";
@@ -245,4 +267,11 @@ function next() {
   // Submit the form
   document.body.appendChild(form);
   form.submit();
+}
+
+function imageHasBeenMoved(idx) {
+  const imageInfo = imageInfos[idx];
+  const initialX = getInitialImagePosition(idx)[0];
+  const initialY = getInitialImagePosition(idx)[1];
+  return imageInfo.x != initialX || imageInfo.y != initialY;
 }
