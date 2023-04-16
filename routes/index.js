@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 var session = require("express-session");
 
-// TODO: Randomize the order of the objects and keep it in a session
 router.use(
   session({
     secret: "novel_object_session",
@@ -19,6 +18,21 @@ router.get("/", function (req, res, next) {
 /* POST home page, save uid in session */
 router.post("/", function (req, res, next) {
   req.session.uid = req.body.uid;
+
+  // Shuffle object ids and build a map from index to object id
+  var randomizedObjectIds = [];
+  for (var i = 1; i <= 30; i++) {
+    randomizedObjectIds.push(i);
+  }
+  randomizedObjectIds.sort(() => Math.random() - 0.5);
+  objectIdMap = {};
+  for (var i = 0; i < randomizedObjectIds.length; i++) {
+    objectIdMap[i + 1] = randomizedObjectIds[i];
+  }
+
+  // Store the map in the session so that it is consistent across pages
+  req.session.objectIdMap = objectIdMap;
+
   res.redirect("/describe/intro");
 });
 

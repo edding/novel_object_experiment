@@ -17,7 +17,8 @@ router.get("/:id", function (req, res, next) {
   if (req.params.id > 30) {
     res.redirect("/trial/intro");
   }
-  res.render("describe", { id: req.params.id });
+  objectId = req.session.objectIdMap[req.params.id];
+  res.render("describe", { id: req.params.id, objectId: objectId });
 });
 
 module.exports = router;

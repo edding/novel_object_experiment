@@ -4,7 +4,7 @@ block content
   body
     h3 Object #{id} / 30      
     
-    img(src='images/objects/#{id}.PNG' alt='Image' style='width: 200px; height: 200px;')
+    img(src='images/objects/#{objectId}.PNG' alt='Image' style='width: 200px; height: 200px;')
     br
     br
 
@@ -33,31 +33,3 @@ block content
     script. 
         const id = #{id};
     script(src='javascripts/describe.js')
-
-//- doctype html
-//- html
-//-   head
-//-     meta(charset='UTF-8')
-//-     title Novel Object Study
-//-     link(rel='stylesheet', href='stylesheets/style.css')
-//-   body
-//-     //- Header
-//-     h1 Object #{id} / 30
-    
-//-     img(src='images/objects/#{id}.PNG' alt='Image' style='width: 200px; height: 200px;')
-//-     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);")
-//-       p Have you seen this object before?
-//-       label
-//-         input(type='radio' name='seen' value='yes') 
-//-         | Yes
-//-       label
-//-         input(type='radio' name='seen' value='no')
-//-         | No
-//-       p If yes, what is it? If no, please provide a description of this object in a short sentence.
-//-       input(type='text' id='description' name='description' placeholder="Describe this object in a short sentence.")
-//-       input(type="hidden" name="id" value='#{id}')
-//-       br
-//-       button#describeSubmit →
-//-     script. 
-//-         const id = #{id};
-//-     script(src='javascripts/describe.js')

@@ -26,11 +26,10 @@ const N_TRAILS = 6;
 // Validation threshold
 // Only allow proceeding to the next task
 // when at least this percentage of images are moved
-// TODO(edwardd): Change this back to 0.5, this is for testing
+// TODO: Change this back to 0.5, this is for testing
 const VALIDATION_THRESHOLD = 0.1;
 
 // Trails
-// TODO: Randomize the mapping from id to image
 const trials = [
   [1, 2, 3, 4, 8, 11, 12, 13, 15, 17, 18, 20, 21, 22, 23, 24],
   [3, 4, 5, 7, 10, 12, 14, 15, 16, 19, 23, 24, 25, 27, 29, 30],
@@ -44,7 +43,7 @@ const trials = [
 var random_image_ids = [];
 
 // Webpage onload entry point
-function start() {
+function start(objectIdArray) {
   const canvas = document.getElementById("canvas");
   canvas.width = WIDTH * SCALE;
   canvas.height = HEIGHT * SCALE;
@@ -54,16 +53,29 @@ function start() {
   const ctx = canvas.getContext("2d");
   ctx.scale(SCALE, SCALE);
 
-  random_image_ids = generateImageIds();
+  random_image_ids = generateImageIds(objectIdArray);
   reset();
   add_listener();
 }
 
-function generateImageIds() {
+function generateImageIds(objectIdArray) {
   // The `id` variable is injected from the jade template
   var trail = trials[id - 1];
   trail.sort(() => Math.random() - 0.5);
-  return trail;
+
+  // Parse JSON to get the object ids and build the objectIdMap
+  var objectIdMap = new Map();
+  for (var i = 0; i < objectIdArray.length; i++) {
+    objectIdMap[i + 1] = objectIdArray[i];
+  }
+
+  // Map the ids in a trail to the object ids
+  var imageIds = [];
+  for (var i = 0; i < trail.length; i++) {
+    imageIds.push(objectIdMap[trail[i]]);
+  }
+
+  return imageIds;
 }
 
 function getInitialImagePosition(index) {

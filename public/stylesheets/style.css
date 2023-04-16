@@ -45,15 +45,10 @@ body {
     width: 400px;
 }
 
-/* .btn {
+.btn {
     width: 150px;
     margin: 0 20px 0 0;
-    background-color: #388e3c;
 }
-
-.btn:hover {
-    background-color: #4caf50
-} */
 
 #example-object-card {
     width: 800px;

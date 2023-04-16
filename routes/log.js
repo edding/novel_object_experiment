@@ -38,35 +38,31 @@ router.post("/trial/:id", function (req, res, next) {
 
 router.post("/describe/:id", function (req, res, next) {
   const id = parseInt(req.params.id);
-  if (id > 0) {
-    // 0 represents the example, there is nothing to log
-    const uid = req.session.uid;
-    const firstTimeWrite = !fs.existsSync("logs/describe.csv");
-    csvWriter = createCsvWriter({
-      path: "logs/describe.csv",
-      header: [
-        { id: "uid", title: "uid" },
-        { id: "object_id", title: "object_id" },
-        { id: "seen", title: "seen" },
-        { id: "description", title: "description" },
-      ],
-      append: !firstTimeWrite,
-    });
+  const objectId = req.session.objectIdMap[id];
+  const uid = req.session.uid;
+  const firstTimeWrite = !fs.existsSync("logs/describe.csv");
+  csvWriter = createCsvWriter({
+    path: "logs/describe.csv",
+    header: [
+      { id: "uid", title: "uid" },
+      { id: "object_id", title: "object_id" },
+      { id: "seen", title: "seen" },
+      { id: "description", title: "description" },
+    ],
+    append: !firstTimeWrite,
+  });
 
-    const records = [
-      {
-        uid: uid,
-        object_id: id,
-        seen: req.body.seen,
-        description: req.body.description,
-      },
-    ];
-    csvWriter
-      .writeRecords(records)
-      .then(() => res.redirect("/describe/" + (id + 1)));
-  } else {
-    res.redirect("/describe/" + (id + 1));
-  }
+  const records = [
+    {
+      uid: uid,
+      object_id: objectId,
+      seen: req.body.seen,
+      description: req.body.description,
+    },
+  ];
+  csvWriter
+    .writeRecords(records)
+    .then(() => res.redirect("/describe/" + (id + 1)));
 });
 
 router.post("/survey", function (req, res, next) {

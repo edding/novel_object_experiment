@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  body(onload='start()')
+  body(onload='start(#{objectIdArray})')
     h3 Trial #{id} / 6
     .container
       #canvas-container
@@ -11,5 +11,6 @@ block content
       #buttons
         a.waves-effect.waves-light.btn#reset-button(onclick='reset()') Reset
         a.waves-effect.waves-light.btn(onclick='next()') Next
-    
+    script. 
+        const id = #{id};
     script(src='javascripts/trial.js')
