@@ -9,14 +9,13 @@ block content
       li See some objects and answer a few questions about them.
       li See a goup of objects and rearrange their position to group similar objects together.
     
-    form(action="/", method="post")
+    form(action="/", method="post", onsubmit="validateInput(event);")
       input#uid_input.text_input(
         type="text", 
         name="uid", 
         placeholder="Enter your 9 digits ID" 
-        oninput='validateInput()'
       ) 
       br
-      button#uid_submit.btn.waves-effect.waves-light(type="submit" disabled) Next
+      button#uid_submit.btn.waves-effect.waves-light(type="submit") Next
     
     script(src='javascripts/index.js')
