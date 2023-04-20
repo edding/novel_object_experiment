@@ -9,7 +9,7 @@ block content
     br
 
     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);" autocomplete="off")
-      p 1. Have you seen this object before?
+      p 1. Have you seen this category of object in your life before?
       
       label.radio
         input(type='radio' name='seen' value='yes') 
@@ -22,7 +22,7 @@ block content
       br
       br
       p 2. If yes, what is it? If no, please provide a description of this object in a short sentence.
-      input#description(type='text' name='description' placeholder="Describe this object in a short sentence.")
+      input#description(type='text' name='description' placeholder="Type your answer here.")
       
       input(type="hidden" name="id" value='#{id}')
       

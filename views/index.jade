@@ -3,17 +3,17 @@ extends layout
 block content 
   body
     h2 Novel Object Study
-    p This expriment assesses perceived similarity. It will take about 30 minutes to complete.
-    p In this study you will: 
+    p Thank you for taking part in this experiment. It is expected to take approximately 60 minutes to complete. 
+    p In this study, you will: 
     ol
-      li See some objects and answer a few questions about them.
-      li See a goup of objects and rearrange their position to group similar objects together.
+      li View images of various objects and respond to some questions about them.
+      li View different sets of object images and rearrange them based on their similarity to one another.
     
     form(action="/", method="post", onsubmit="validateInput(event);" autocomplete="off")
       input#uid_input.text_input(
         type="text", 
         name="uid", 
-        placeholder="Enter your 9 digits ID" 
+        placeholder="Please enter your 9-digit UID without any dashes. For example: 123456789" 
       ) 
       br
       button#uid_submit.btn.waves-effect.waves-light(type="submit") Next
