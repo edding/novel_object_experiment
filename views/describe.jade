@@ -8,7 +8,7 @@ block content
     br
     br
 
-    form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);")
+    form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);" autocomplete="off")
       p 1. Have you seen this object before?
       
       label.radio

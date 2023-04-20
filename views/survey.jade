@@ -5,7 +5,7 @@ block content
     h3 End of Experiment Survey
     p You've completed all tasks. Thanks for participating! Please fill this survey and submit your response.
     
-    form(action="/log/survey", method="post")
+    form(action="/log/survey" method="post" autocomplete="off")
       p Gender:
       label.radio
         input(type='radio' name='gender' value='male') 

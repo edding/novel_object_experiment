@@ -9,7 +9,7 @@ block content
       li See some objects and answer a few questions about them.
       li See a goup of objects and rearrange their position to group similar objects together.
     
-    form(action="/", method="post", onsubmit="validateInput(event);")
+    form(action="/", method="post", onsubmit="validateInput(event);" autocomplete="off")
       input#uid_input.text_input(
         type="text", 
         name="uid", 
