@@ -107,7 +107,7 @@ function init_images() {
     // Load image
     const img = new Image();
     const idx = random_image_ids[i - 1];
-    img.src = "images/objects/" + idx + ".png";
+    img.src = "images/objects/" + idx + ".PNG";
     img.onload = draw; // Call `draw` when the image is loaded
     images.push(img);
 
