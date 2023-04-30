@@ -6,35 +6,20 @@
 
 var app = require('../app');
 var debug = require('debug')('novel-object-app:server');
-
-/**
- * MG 042823
- */
-var https = require('https');
-const fs = require('fs');
+var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
+
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/** 
- * MG 042823 Read the SSL Certificate .cert and .key
- */
-var key = fs.readFileSync('/etc/httpd/conf/ssl.key/novel-object-database.psych.ucla.edu.key');
-var cert = fs.readFileSync('/etc/httpd/conf/ssl.crt/novel-object-database_psych_ucla_edu_cert.cer');
-var options = {
-  key: key,
-  cert: cert
-}; 
-
 /**
- * MG 042823 modified http to https 
  * Create HTTP server.
- */ 
+ */
 
-var server = https.createServer(options,app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
