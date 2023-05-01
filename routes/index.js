@@ -18,6 +18,7 @@ router.get("/", function (req, res, next) {
 /* POST home page, save uid in session */
 router.post("/", function (req, res, next) {
   req.session.uid = req.body.uid;
+  req.session.name = req.body.name;
 
   // Shuffle object ids and build a map from index to object id
   var randomizedObjectIds = [];

@@ -14,19 +14,27 @@ block content
       <div style="background-color:yellow;"> Please decide based solely on the SHAPE of the object, IGNORING COLORS. </div>
       
       br
-      label.radio
-        input(type='radio' name='seen' value='yes') 
+      label.radio.with-gap
+        input.with-gap(type='radio' name='seen' value='yes') 
         span.black-text.radio-label Yes
       
-      label.radio
-        input(type='radio' name='seen' value='no')
+      label.radio.with-gap
+        input.with-gap(type='radio' name='seen' value='no')
         span.black-text.radio-label No
       
       br
       br
       p 2. If yes, what is it? If no, please provide a description of this object in a couple of short sentencs. 
       <div style="background-color:yellow;"> Please name or describe based solely on the SHAPE of the object, IGNORING COLORS.</div>
-      input#description(type='text' name='description' placeholder="Type your answer here.")
+      //- input#description(type='text' name='description' placeholder="Type your answer here.")
+
+      br
+      .input-field
+        input#description.validate(
+          type='text',
+          name="description"
+        )
+        label(for='name') Description
       
       input(type="hidden" name="id" value='#{id}')
       

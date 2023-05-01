@@ -79,6 +79,8 @@ router.post("/survey", function (req, res, next) {
     append: !firstTimeWrite,
   });
 
+  var instance = M.FormSelect.getInstance(elem);
+
   const records = [
     {
       uid: uid,

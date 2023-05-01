@@ -43,7 +43,7 @@ body {
     background: rgb(81, 81, 81);
 }
 
-#uid_input {
+#uid_input, #name_input {
     width: 400px;
 }
 
@@ -53,7 +53,7 @@ body {
 }
 
 #example-object-card {
-    width: 600px;
+    width: 625px;
 }
 
 #object-card {
@@ -85,6 +85,6 @@ body {
     width: 100px;
 }
 
-#survey_input {
-    width: 500px;
+.question {
+    font-weight: bold;
 }

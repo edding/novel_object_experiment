@@ -11,13 +11,22 @@ block content
       li View images of various objects and respond to some questions about them (Part 1).
       li View different sets of object images and rearrange them based on their similarity to one another (Part 2).
     
-    p If you are ready to proceed, please enter your 9-digit UID below and click "Next"
+    p If you are ready to proceed, please enter your 9-digit UID without any dashes below (e.g., 123456789)
     form(action="/", method="post", onsubmit="validateInput(event);" autocomplete="off")
-      input#uid_input.text_input(
-        type="text", 
-        name="uid", 
-        placeholder="9-digit UID without any dashes. Example: 123456789" 
-      ) 
+      .input-field
+        input#uid_input.validate(
+          placeholder="" 
+          type='text'
+        )
+        label(for='uid') UID
+      
+      br
+      p
+        |  Please enter your name (this is just for the purpose of granting extra credit in case you entered a wrong UID), and click "Next" to proceed.
+      .input-field
+        input.validate#name_input(placeholder="" type='text')
+        label(for='name') Name
+      
       br
       button#uid_submit.btn.waves-effect.waves-light(type="submit") Next
     

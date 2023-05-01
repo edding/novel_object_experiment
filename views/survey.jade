@@ -3,29 +3,76 @@ extends layout
 block content 
   body
     h3 End of Experiment Survey
-    p This final section will require you to respond to some demographic questions. You may choose to skip any questions that you do not wish to answer. Once you finished, please click "SUBMIT" to record your reponse.
-    
+    p Now just a few demographic questions. Your answers to these questions, as with all your answers on this survey, are kept confidential.
+    p Once you finished, please click "SUBMIT" to record your reponse.
+    br
+
     form(action="/log/survey" method="post" autocomplete="off")
-      p Gender:
-      label.radio
-        input(type='radio' name='gender' value='male') 
-        span.black-text.radio-label Male
+      p.question What best describes your gender?
+      .input-field
+        select#gender_selector
+          option(value='' disabled='' selected='') Choose your gender
+          option(value='Male') Male
+          option(value='Female') Female
+          option(value='Non-binary') Non-binary
+          option(value='Prefer to self-describe') Prefer to self-describe
+          option(value='Prefer not to answer') Prefer not to answer
+        label(for='gender_selector') Gender
       
-      label.radio
-        input(type='radio' name='gender' value='female') 
-        span.black-text.radio-label Female
+      input(type="hidden" name="gender" value="")
+
+      br
+      p.question If you indicated that you prefer to self-describe your gender, how do you describe yourself?
+      .input-field
+        input.validate#gender_self_describe(type='text')
+        label(for='gender_self_describe') Self Described Gender
+
+      br
+      p.question 
+        | Which of the following categories describe you? 
+        | If you'd like to use more than one category or if you'd like to use a category not provided, 
+        | please select "prefer to self-describe" and answer the next question.
       
+      .input-field
+        select#race_selector
+          option(value='' disabled='' selected='') Choose one option that best describe you
+          option(value='American Indian or Alaska Native') American Indian or Alaska Native (Examples include Navajo Nation, Blackfeet Tribe, Mayan, Aztec, Nome Eskimo Community, etc)
+          option(value='Asian or Asian Am.') Asian or Asian Am. (Examples include Asian American, Chinese, Fillipino, Asian Indian, Vietnamese, Korean, etc.)
+          option(value='Black or African Am.') Black or African Am. (Examples include African American, Jamaican, Haitian, Nigerian, Ethiopian, Somalian, etc.)
+          option(value='Hispanic, Latino, or Spanish Origin') Hispanic, Latino, or Spanish Origin (Examples include Mexican or Mexican American, Puerto Rican, Cuban, Salvadorian, Dominican, Columbian, etc.)
+          option(value='Middle Eastern or North African') Middle Eastern or North African (Examples include Lebanese, Iranian, Egyptian, Syrian, Moroccan, Algerian, etc.)
+          option(value='Native Hawaiian or Other Pacific Islander') Native Hawaiian or Other Pacific Islander (Examples include Native Hawaiian, Samoan, Chamorro, Tongan, Fijian, Marshalese, etc)
+          option(value='White') White (Examples include German, Irish, English, French, Norwegian, etc.)
+          option(value='Prefer to self-describe') Prefer to self-describe my race, ethnicity, or national origin
+          option(value='Prefer not to answer') Prefer not to answer
+        label(for='gender_selector') Race
+      input(type="hidden" name="race" value="")
+
+      br
+      p.question If you prefer to self-describe your race, identity, or national origin, how do you describe yourself?
+      .input-field
+        input.validate#race_self_describe(type="text", name="race_self_describe")
+        label(for='race_self_describe') Self Described Race
+
+      br
+      br
+      p.question Is English your native language?
       label.radio
-        input(type='radio' name='gender' value='others') 
-        span.black-text.radio-label Others
+        input.with-gap(type='radio' name='english_native' value='Yes') 
+        span.black-text.radio-label Yes
 
-      p Age:
-        br
-        input.survey_text#survey_input(type='number' name='age' min='0' max='100' placeholder='Age')
-    
-      p Email: 
-        br
-        input.survey_text#survey_input(type='email' name='email' placeholder='Email')
+      label.radio
+        input.with-gap(type='radio' name='english_native' value='No') 
+        span.black-text.radio-label No
 
-      //- TODO: Add more questions here
+      br
+      br
+      p.question If not, list your native language(s) here.
+      .input-field
+        input.validate#native_language(type="text", name="native_language")
+        label(for='native_language') Native Language
+
+      br
+      br
       button.btn.waves-effect.waves-light(type="submit") Submit Response
+    script(src='javascripts/survey.js')
