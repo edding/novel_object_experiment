@@ -9,6 +9,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.post("/trial/:id", function (req, res, next) {
   const uid = req.session.uid;
   const id = parseInt(req.params.id);
+  const name = req.session.name;
 
   // Parse data from the request
   const dataJson = req.body.data;
@@ -19,6 +20,7 @@ router.post("/trial/:id", function (req, res, next) {
     path: "logs/trial.csv",
     header: [
       { id: "uid", title: "uid" },
+      { id: "name", title: "name" },
       { id: "trial_id", title: "trial_id" },
       { id: "object_id", title: "object_id" },
       { id: "x", title: "x" },
@@ -29,7 +31,7 @@ router.post("/trial/:id", function (req, res, next) {
 
   records = [];
   for (const d of data) {
-    records.push({ ...JSON.parse(d), uid: uid });
+    records.push({ ...JSON.parse(d), uid: uid, name: name });
   }
   csvWriter
     .writeRecords(records)
@@ -40,11 +42,13 @@ router.post("/describe/:id", function (req, res, next) {
   const id = parseInt(req.params.id);
   const objectId = req.session.objectIdMap[id];
   const uid = req.session.uid;
+  const name = req.session.name;
   const firstTimeWrite = !fs.existsSync("logs/describe.csv");
   csvWriter = createCsvWriter({
     path: "logs/describe.csv",
     header: [
       { id: "uid", title: "uid" },
+      { id: "name", title: "name" },
       { id: "object_id", title: "object_id" },
       { id: "seen", title: "seen" },
       { id: "description", title: "description" },
@@ -55,6 +59,7 @@ router.post("/describe/:id", function (req, res, next) {
   const records = [
     {
       uid: uid,
+      name: name,
       object_id: objectId,
       seen: req.body.seen,
       description: req.body.description,
@@ -67,26 +72,35 @@ router.post("/describe/:id", function (req, res, next) {
 
 router.post("/survey", function (req, res, next) {
   const uid = req.session.uid;
+  const name = req.session.name;
   const firstTimeWrite = !fs.existsSync("logs/survey.csv");
   csvWriter = createCsvWriter({
     path: "logs/survey.csv",
     header: [
       { id: "uid", title: "uid" },
+      { id: "name", title: "name" },
       { id: "gender", title: "gender" },
+      { id: "gender_self_describe", title: "gender_self_describe" },
+      { id: "race", title: "race" },
+      { id: "race_self_describe", title: "race_self_describe" },
       { id: "age", title: "age" },
-      { id: "email", title: "email" },
+      { id: "english_native", title: "english_native" },
+      { id: "native_language", title: "native_language" },
     ],
     append: !firstTimeWrite,
   });
 
-  var instance = M.FormSelect.getInstance(elem);
-
   const records = [
     {
       uid: uid,
+      name: name,
       gender: req.body.gender,
+      gender_self_describe: req.body.gender_self_describe,
+      race: req.body.race,
+      race_self_describe: req.body.race_self_describe,
       age: req.body.age,
-      email: req.body.email,
+      english_native: req.body.english_native,
+      native_language: req.body.native_language,
     },
   ];
 

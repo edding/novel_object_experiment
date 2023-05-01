@@ -14,17 +14,14 @@ block content
     p If you are ready to proceed, please enter your 9-digit UID without any dashes below (e.g., 123456789)
     form(action="/", method="post", onsubmit="validateInput(event);" autocomplete="off")
       .input-field
-        input#uid_input.validate(
-          placeholder="" 
-          type='text'
-        )
+        input#uid_input.validate(type='text' name="uid")
         label(for='uid') UID
       
       br
       p
         |  Please enter your name (this is just for the purpose of granting extra credit in case you entered a wrong UID), and click "Next" to proceed.
       .input-field
-        input.validate#name_input(placeholder="" type='text')
+        input.validate#name_input(type='text' name="name")
         label(for='name') Name
       
       br

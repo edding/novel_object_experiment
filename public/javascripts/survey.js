@@ -9,12 +9,14 @@ const genderSelector = document.getElementById("gender_selector");
 genderSelector.addEventListener("change", function () {
   const instance = M.FormSelect.getInstance(genderSelector);
   const selectedValues = instance.getSelectedValues();
-  console.log(selectedValues);
+  const gender = document.getElementById("gender");
+  gender.value = selectedValues[0];
 });
 
 const raceSelector = document.getElementById("race_selector");
 raceSelector.addEventListener("change", function () {
   const instance = M.FormSelect.getInstance(raceSelector);
   const selectedValues = instance.getSelectedValues();
-  console.log(selectedValues);
+  const race = document.getElementById("race");
+  race.value = selectedValues[0];
 });

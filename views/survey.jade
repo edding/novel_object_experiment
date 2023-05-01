@@ -19,12 +19,12 @@ block content
           option(value='Prefer not to answer') Prefer not to answer
         label(for='gender_selector') Gender
       
-      input(type="hidden" name="gender" value="")
+      input#gender(type="hidden" name="gender" value="")
 
       br
       p.question If you indicated that you prefer to self-describe your gender, how do you describe yourself?
       .input-field
-        input.validate#gender_self_describe(type='text')
+        input.validate#gender_self_describe(type='text' name='gender_self_describe')
         label(for='gender_self_describe') Self Described Gender
 
       br
@@ -46,7 +46,7 @@ block content
           option(value='Prefer to self-describe') Prefer to self-describe my race, ethnicity, or national origin
           option(value='Prefer not to answer') Prefer not to answer
         label(for='gender_selector') Race
-      input(type="hidden" name="race" value="")
+      input#race(type="hidden" name="race" value="")
 
       br
       p.question If you prefer to self-describe your race, identity, or national origin, how do you describe yourself?
@@ -55,6 +55,11 @@ block content
         label(for='race_self_describe') Self Described Race
 
       br
+      p.question What is your age?
+      .input-field
+        input.validate#age(type="number" name="age")
+        label(for='age') Age
+
       br
       p.question Is English your native language?
       label.radio
@@ -74,5 +79,5 @@ block content
 
       br
       br
-      button.btn.waves-effect.waves-light(type="submit") Submit Response
+      button.btn.waves-effect.waves-light(type="submit") Submit
     script(src='javascripts/survey.js')
