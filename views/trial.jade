@@ -3,6 +3,13 @@ extends layout
 block content
   body(onload='start(#{objectIdArray})')
     h3 Trial #{id} / 6
+
+    p 
+      | You may click on an object and drag it to move it around freely. 
+      br
+      <div style="background-color:yellow;"> Your task is to rearrange these objects by placing those that are more similar (based on SHAPE, NOT COLORS) to each other closer. </div>
+
+
     .container
       #canvas-container
         canvas#canvas(width='1000px', height='600px')

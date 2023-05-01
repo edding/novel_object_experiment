@@ -10,8 +10,10 @@ block content
     br
 
     form(action="/log/describe/#{id}", method="post", onsubmit="validateInput(event);" autocomplete="off")
-      p 1. Have you seen this category of object in your life before?
+      p 1. Have you seen this category of object in your life before? 
+      <div style="background-color:yellow;"> Please decide based solely on the SHAPE of the object, IGNORING COLORS. </div>
       
+      br
       label.radio
         input(type='radio' name='seen' value='yes') 
         span.black-text.radio-label Yes
@@ -22,7 +24,8 @@ block content
       
       br
       br
-      p 2. If yes, what is it? If no, please provide a description of this object in a short sentence.
+      p 2. If yes, what is it? If no, please provide a description of this object in a couple of short sentencs. 
+      <div style="background-color:yellow;"> Please name or describe based solely on the SHAPE of the object, IGNORING COLORS.</div>
       input#description(type='text' name='description' placeholder="Type your answer here.")
       
       input(type="hidden" name="id" value='#{id}')
