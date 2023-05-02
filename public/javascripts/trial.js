@@ -26,8 +26,7 @@ const N_TRAILS = 6;
 // Validation threshold
 // Only allow proceeding to the next task
 // when at least this percentage of images are moved
-// TODO: Change this back to 0.5, this is for testing
-const VALIDATION_THRESHOLD = 0.1;
+const VALIDATION_THRESHOLD = 0.5;
 
 // Trails
 const trials = [
